@@ -1,20 +1,17 @@
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
---use IEEE.NUMERIC_STD.ALL;
-
-	
 
 entity mn_param_adder is
-	generic (adder_size : integer := 8;
-				sub_adder_size : integer :=2);
+	generic (adder_size : integer;
+				sub_adder_size : integer);
 	
-    Port ( A : in  STD_LOGIC_VECTOR (adder_size-1 downto 0);
+	Port ( A : in  STD_LOGIC_VECTOR (adder_size-1 downto 0);
            B : in  STD_LOGIC_VECTOR (adder_size-1 downto 0);
            Cin : in  STD_LOGIC;
            S : out  STD_LOGIC_VECTOR (adder_size-1 downto 0);
            Cout : out  STD_LOGIC);
+		
 end mn_param_adder;
 
 architecture Behavioral of mn_param_adder is
