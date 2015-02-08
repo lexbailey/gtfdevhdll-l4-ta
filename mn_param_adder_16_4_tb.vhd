@@ -1,7 +1,11 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
+USE ieee.numeric_std.ALL;
  
 ENTITY mn_param_adder_16_4_tb IS
+
+	constant size : natural := 16;
+	constant sub_size : natural := 4;
 
 	type test_vector is record
 		a : std_logic_vector (15 downto 0);
@@ -15,10 +19,15 @@ ENTITY mn_param_adder_16_4_tb IS
 		(natural range <>) of test_vector;
 		constant test_vectors : test_vector_array := (
 		-- a, b, s, cin, cout
-		("0000000000000000", "0000000000000000", "0000000000000000", '0', '0'),
-		("0000000000000000", "0000000000000000", "0000000000000000", '0', '0'),
-		("0000000000000000", "0000000000000000", "0000000000000000", '0', '0'),
-		("0000000000000000", "0000000000000000", "0000000000000000", '0', '0'));
+		(X"0000", X"0000", X"0000", '0', '0'), --no carry
+		(X"ffff", X"0000", X"0000", '1', '1'), --carry all the way
+		(X"1428", X"94ab", X"a8d3", '0', '0'), --some carry bits high but not all
+		(X"0000", X"0000", X"0001", '1', '0'), --just carry in
+		(X"8000", X"8000", X"0000", '0', '1'), --just carry out
+		(X"aaaa", X"5555", X"ffff", '0', '0'), --no carry
+		(X"aaaa", X"5554", X"ffff", '1', '0'), --no carry out
+		(X"aaaa", X"d555", X"7fff", '0', '1')  --no carry in
+	);
 
 
 END mn_param_adder_16_4_tb;
@@ -26,9 +35,6 @@ END mn_param_adder_16_4_tb;
 ARCHITECTURE behavior OF mn_param_adder_16_4_tb IS 
  
     -- Component Declaration for the Unit Under Test (UUT)
- 
-	constant size : natural := 16;
-	constant sub_size : natural := 4;
  
     COMPONENT mn_param_adder
 	 generic (adder_size : natural;
@@ -85,13 +91,14 @@ BEGIN
 			assert ((s = test_vectors(i).s) and
 						(Cout = test_vectors(i).Cout))
 			report "Test condition " & integer'image(i) &
-						" failed. a = " & std_logic'image(a(0)) &
-						" b = " & std_logic'image(b(0)) &
-						" cin = " & std_logic'image(cin) &
-						" expected s = " & std_logic'image(test_vectors(i).s(0)) &
-						" got s = " & std_logic'image(s(0)) &
-						" expected cout = " & std_logic'image(test_vectors(i).cout) &
-						" got cout = " & std_logic'image(cout)
+						" failed. a = " & integer'image(to_integer(unsigned(a))) &
+						", b = " & integer'image(to_integer(unsigned(b))) &
+						", cin = " & std_logic'image(cin) &
+						". Expected s = " & integer'image(to_integer(unsigned(test_vectors(i).s))) &
+						", cout = " & std_logic'image(test_vectors(i).cout) &
+						". But got s = " & integer'image(to_integer(unsigned(s))) &
+						", cout = " & std_logic'image(cout) &
+						"."
 			severity error;
 		end loop;
 
