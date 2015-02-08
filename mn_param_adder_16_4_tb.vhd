@@ -8,9 +8,9 @@ ENTITY mn_param_adder_16_4_tb IS
 	constant sub_size : natural := 4;
 
 	type test_vector is record
-		a : std_logic_vector (15 downto 0);
-		b : std_logic_vector (15 downto 0);
-		s : std_logic_vector (15 downto 0);
+		a : std_logic_vector (size-1 downto 0);
+		b : std_logic_vector (size-1 downto 0);
+		s : std_logic_vector (size-1 downto 0);
 		cin : std_logic;
 		cout : std_logic;
 	end record;
