@@ -7,6 +7,7 @@ ENTITY mn_param_adder_16_4_tb IS
 	constant size : natural := 16;
 	constant sub_size : natural := 4;
 
+	--record type for the test vectors
 	type test_vector is record
 		a : std_logic_vector (size-1 downto 0);
 		b : std_logic_vector (size-1 downto 0);
@@ -15,6 +16,7 @@ ENTITY mn_param_adder_16_4_tb IS
 		cout : std_logic;
 	end record;
 
+	--array of test vectors
 	type test_vector_array is array
 		(natural range <>) of test_vector;
 		constant test_vectors : test_vector_array := (
@@ -83,11 +85,15 @@ BEGIN
       -- hold reset state for 100 ns.
       wait for 100 ns;	
 		
+		--loop through all available test vectors
 		for i in test_vectors'range loop
+			--set the inputs
 			a <= test_vectors(i).a;
 			b <= test_vectors(i).b;
 			cin <= test_vectors(i).cin;
-			wait for 20 ns; -- multiple of period when sequential
+			wait for 20 ns;
+			
+			--self-check outputs
 			assert ((s = test_vectors(i).s) and
 						(Cout = test_vectors(i).Cout))
 			report "Test condition " & integer'image(i) &
